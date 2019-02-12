@@ -11,11 +11,14 @@ private:
 public:
 	sf::Vector2f current_position;
 	sf::Vector2i mouse_position;
+	sf::Image img;
+	sf::RectangleShape rect;
 
 	void initialization()
 	{
 		window.create(sf::VideoMode(900, 600), "My window");
-
+		img.create(window.getSize().x,window.getSize().y, sf::Color(255,255,255));
+		rect.setSize(sf::Vector2f(window.getSize().x,window.getSize().y));
 		current_position.x = 0;
 		current_position.y = 0;
 
@@ -33,14 +36,6 @@ public:
 				{
 					window.close();
 				}
-
-				if (event.type == sf::Mouse::isButtonPressed(sf::Mouse::Left))  // if we press the mouse...
-				{
-					mouse_position = sf::Mouse::getPosition(window);
-					current_position = sf::Vector2f(mouse_position);
-
-					circle.setPosition(20,40);
-				}
 			}
 
 			display();
@@ -49,7 +44,14 @@ public:
 	void display()
 	{
 		window.clear(sf::Color(255,255,255));
-		window.draw(circle);
+		mouse_position = sf::Mouse::getPosition(window);
+		img.setPixel(mouse_position.x, mouse_position.y, sf::Color(rand()));
+		sf::Sprite s;
+		sf::Texture* t = new sf::Texture();
+		t->loadFromImage(img, sf::IntRect(0,0,img.getSize().x,img.getSize().y));
+		rect.setTexture(t);
+		window.draw(rect);
+		delete t;
 		window.display();
 	}
 	void run()
